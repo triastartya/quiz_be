@@ -18,36 +18,52 @@ class QuizReportController extends Controller
             $m_max=0;
             foreach($request->data as $jenis){
                 $benar = 0;
-                foreach($jenis['soal'] as $soal){
-                    $benar = $benar + (int)$soal['answer'];
+                //====== Scoring 
+                if($jenis['scoring']==1){
+                    foreach($jenis['soal'] as $soal){
+                        $benar = $benar + (int)$soal['answer'];
+                    }
+                    $score = ($benar/(int)$jenis['max_score'])*100;
+                    $status = 'oke';
+                    if($score>80){
+                        $status = 'baik';
+                    }
+                    if($score>=60 && $score<=80){
+                        $status = 'cukup';
+                    }
+                    if($score<60){
+                        $status = 'kurang';
+                    }
+                    $data[] = [
+                        'id_child'=>$request->id_child,
+                        'id_quiz'=>$jenis['id'],
+                        'jenis_quiz' =>$jenis['id'],
+                        'is_passed' => true,
+                        'answer' => json_encode($jenis),
+                        'jawaban' => (int)$jenis['max_score'],
+                        'benar' =>$benar,
+                        'score' =>$score,
+                        'color' => 'ok',
+                        'status' => $status
+                    ];
+                }else{
+                    $data[] = [
+                        'id_child'=>$request->id_child,
+                        'id_quiz'=>$jenis['id'],
+                        'jenis_quiz' =>$jenis['id'],
+                        'is_passed' => true,
+                        'answer' => json_encode($jenis),
+                        'jawaban' => (int)$jenis['max_score'],
+                        'benar' =>0,
+                        'score' =>0,
+                        'color' => 'ok',
+                        'status' => 'tidak di scoring'
+                    ];
                 }
-                // dd($jenis['max_score']);
-                // dd($benar);
-                $score = ($benar/(int)$jenis['max_score'])*100;
-                $status = 'oke';
-                if($score>80){
-                    $status = 'baik';
-                }
-                if($score>=60 && $score<=80){
-                    $status = 'cukup';
-                }
-                if($score<60){
-                    $status = 'kurang';
-                }
-                $data[] = [
-                    'id_child'=>$request->id_child,
-                    'id_quiz'=>$soal['id'],
-                    'jenis_quiz' =>$soal['id'],
-                    'is_passed' => true,
-                    'answer' => json_encode($jenis),
-                    'jawaban' => (int)$jenis['max_score'],
-                    'benar' =>$benar,
-                    'score' =>$score,
-                    'color' => 'ok',
-                    'status' => $status
-                ];
+                
                 $m_benar = $m_benar + $benar;
                 $m_max = $m_max + (int)$jenis['max_score'];
+                
             }
             
             $m_score =  ($m_benar/$m_max)*100;
@@ -77,7 +93,7 @@ class QuizReportController extends Controller
             }
             
             DB::commit();
-            return response()->json(['status'=>true,'data'=>$data]);
+            return response()->json(['status'=>true,'data'=>$master]);
             
         }catch(\Exception $ex) {
             DB::rollBack();
@@ -87,7 +103,7 @@ class QuizReportController extends Controller
     }
     
     public function getReport(Request $request){
-        $data = quiz_submission_master::with('child','quiz_submission')->where('id',$request->id)->first();
+        $data = quiz_submission_master::with('child','quiz_submission.quiz')->where('id',$request->id)->first();
         return response()->json(['status'=>true,'data'=>$data]);
     }
 }
