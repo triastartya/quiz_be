@@ -25,14 +25,18 @@ class QuizReportController extends Controller
                     }
                     $score = ($benar/(int)$jenis['max_score'])*100;
                     $status = 'oke';
+                    $color = '';
                     if($score>80){
                         $status = 'baik';
+                        $color = 'text-green-500';
                     }
                     if($score>=60 && $score<=80){
                         $status = 'cukup';
+                        $color = 'text-yellow-400';
                     }
                     if($score<60){
                         $status = 'kurang';
+                        $color = 'text-red-500';
                     }
                     $data[] = [
                         'id_child'=>$request->id_child,
@@ -43,7 +47,7 @@ class QuizReportController extends Controller
                         'jawaban' => (int)$jenis['max_score'],
                         'benar' =>$benar,
                         'score' =>$score,
-                        'color' => 'ok',
+                        'color' => $color,
                         'status' => $status
                     ];
                 }else{
