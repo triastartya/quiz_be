@@ -26,7 +26,7 @@ class child extends Model
     }
     
     public function quiz_submission_master(){
-        return $this->hasOne(quiz_submission_master::class,'id_child','id');
+        return $this->hasMany(quiz_submission_master::class,'id_child','id');
     }
 
 }

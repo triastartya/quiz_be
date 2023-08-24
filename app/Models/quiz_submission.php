@@ -12,5 +12,10 @@ class quiz_submission extends Model
     public function quiz(){
         return $this->hasOne(quiz::class,'id','id_quiz');
     }
+    
+    public function getAnswerAttribute()
+    {
+        return json_decode($this->attributes['answer']);
+    }
 
 }

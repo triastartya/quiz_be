@@ -68,6 +68,14 @@ Route::get('/belajar', function () {
     return view('pages.edukasi');
 });
 
+Route::get('/hasil', function () {
+    return view('pages.hasil');
+});
+
+Route::get('/jawaban', function () {
+    return view('pages.jawaban');
+});
+
 Route::group(['middleware' => ['web']], function () {
     // your routes here
 });

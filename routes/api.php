@@ -61,3 +61,7 @@ Route::get('pengguna',[App\Http\Controllers\UserController::class,'pengguna']);
 
 Route::post('register',[App\Http\Controllers\UserController::class, 'register']);
 
+Route::get('setJawaban',[App\Http\Controllers\QuizReportController::class,'setJawaban']);
+
+Route::get('hasil',[App\Http\Controllers\QuizReportController::class,'hasil']);
+Route::get('jawaban',[App\Http\Controllers\QuizReportController::class,'jawaban']);

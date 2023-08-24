@@ -4,7 +4,7 @@
         <!-- Default box -->
         <div class="card mt-3">
             <div class="card-header">
-                <h3 class="card-title">Data Remaja</h3>
+                <h3 class="card-title">Data Jawaban</h3>
             </div>
             <div class="card-body">
                 <div class="row" >
@@ -27,34 +27,21 @@ app.controller("myCtrl", function($scope,$http) {
     $scope.data = [];
     $scope.update =false;
 
-    
-    var btnDel  =  "<a class='btn btn-outline-danger btn-nav' href='javascript:void(0)' title='Hapus' id='DeleteRow' ><i class='fa fa-trash-alt tip pointer posdel'></i></a>";
-    var btnEdit =  " <a class='btn btn-outline-success btn-nav' href='javascript:void(0)' title='Ubah' id='EditRow' ><i class='fa fa-pen tip pointer posdel'></i></a>";
     var table =  $('#listdatatable').DataTable({
             dom: 'Bfrtip',
+            sScrollX: true,
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
             columns: [
-                { title:"Id" ,     "data":"id" ,     "width":"20px" },
-                { title:"NISN",    "data": "nisn" },
-                { title:"Nama",    "data": "nama" },
-                { title:"Email",    "data": "email" },
-                { title:"Jenis_Kelamin",    "data": "jenis_kelamin" },
-                { title:"Tanggal_Lahir",    "data": "tanggal_lahir" },
-                { title:"Alamat",    "data": "alamat" },
-                { title:"Berat_Badan",    "data": "berat_badan" },
-                { title:"Tinggi_Badan",    "data": "tinggi_badan" },
-                { title:"lila",    "data": "lila_p" },
-                { title:"Tinggal",    "data": "tinggal" },
-                { title:"Uang_Saku",    "data": "uang_saku" },
-                { title:"Pendidikan_Ayah",  "data": "pendidikan_ayah" },
-                { title:"Pendidikan_Ibu",  "data": "pendidikan_ibu" },
-                { title:"Pekerjaan_Ayah",  "data": "pekerjaan_ayah" },
-                { title:"Pekerjaan_Ibu",  "data": "pekerjaan_ibu" },
-                { title:"Jumlah_Anggota_Keluarga_Di_Rumah",  "data": "jumlah_anggota_keluarga_di_rumah" },
-                { title:"Riwayat_Asi_Ekslusif",  "data": "riwayat_asi_eksekutif" }
-                //{ title:"Action",      "defaultContent": btnDel + btnEdit, "width":"100px" },
+                { title:"Anak" ,     "data":"anak","width":"200px" },
+                { title:"Tangal Input" ,     "data":"tangal_input","width":"200px" },
+                { title:"quiz" ,     "data":"quiz" ,"width":"500px"},
+                { title:"soal" ,     "data":"soal" ,"width":"800px"},
+                { title:"is_isian" ,     "data":"is_isian","width":"50px" },
+                { title:"jawaban" ,     "data":"jawaban","width":"200px" },
+                { title:"isian" ,     "data":"isian" ,"width":"100px"},
+                { title:"score" ,     "data":"score" ,"width":"50px"},
             ]
         });
 
@@ -73,7 +60,7 @@ app.controller("myCtrl", function($scope,$http) {
         Swal.fire({title: 'Loading..',onOpen: () => {Swal.showLoading()}})
         
         table.clear().draw();
-        $http.get("{{ url('api/child') }}").then(function(res){
+        $http.get("{{ url('api/jawaban') }}").then(function(res){
             table.rows.add(res.data.data).draw( );
             Swal.close();
         });

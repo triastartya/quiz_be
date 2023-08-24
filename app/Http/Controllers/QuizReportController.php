@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\child;
 use App\Models\quiz_submission;
+use App\Models\quiz_submission_jawaban;
 use App\Models\quiz_submission_master;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -109,5 +111,101 @@ class QuizReportController extends Controller
     public function getReport(Request $request){
         $data = quiz_submission_master::with('child','quiz_submission.quiz')->where('id',$request->id)->first();
         return response()->json(['status'=>true,'data'=>$data]);
+    }
+    
+    public function hasil(){
+        $data = quiz_submission_master::with('child','quiz_submission')->get();
+        return response()->json(['status'=>true,'data'=>$data]);
+    }
+    
+    public function setJawaban(){
+        DB::beginTransaction();
+        try{
+            $data = child::with('quiz_submission_master.quiz_submission')->get();
+            foreach($data as $anak){
+                if(count($anak->quiz_submission_master)){
+                    foreach($anak->quiz_submission_master as $input_soal){
+                        if(count($input_soal->quiz_submission)){
+                            foreach($input_soal->quiz_submission as $jenis_soal){
+                                if(count($jenis_soal->answer->soal)){
+                                    foreach($jenis_soal->answer->soal as $soal){
+                                        if(count($soal->options)){
+                                            foreach($soal->options as $options){
+                                                if($options->jawaban){
+                                                    quiz_submission_jawaban::create([
+                                                        'id_anak'=>$anak->id,
+                                                        'anak' =>$anak->nama,
+                                                        'id_submission' => $jenis_soal->id,
+                                                        'id_quiz' => $jenis_soal->id_quiz,
+                                                        'quiz' => $jenis_soal->answer->title,
+                                                        'id_quiz_soal' => $soal->id,
+                                                        'soal' => $soal->question,
+                                                        'is_isian' => $soal->is_isian,
+                                                        'id_quiz_option' => $options->id,
+                                                        'jawaban' => $options->question,
+                                                        'isian' => $options->isian,
+                                                        'score' => $options->score,
+                                                    ]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json(['status'=>true,'data'=>$data]);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json(['status'=>false,'data'=>[],'message'=>$ex->getMessage()]);
+        }
+    }
+    
+    public function jawaban(){
+        $jawaban = [];
+        try{
+            $data = child::with('quiz_submission_master.quiz_submission')->get();
+            foreach($data as $anak){
+                if(count($anak->quiz_submission_master)){
+                    foreach($anak->quiz_submission_master as $input_soal){
+                        if(count($input_soal->quiz_submission)){
+                            foreach($input_soal->quiz_submission as $jenis_soal){
+                                if(count($jenis_soal->answer->soal)){
+                                    foreach($jenis_soal->answer->soal as $soal){
+                                        if(count($soal->options)){
+                                            foreach($soal->options as $options){
+                                                if($options->jawaban){
+                                                    $jawaban[] = [
+                                                        'id_anak'=>$anak->id,
+                                                        'anak' =>$anak->nama,
+                                                        'tangal_input' => $input_soal->created_at,
+                                                        'id_submission' => $jenis_soal->id,
+                                                        'id_quiz' => $jenis_soal->id_quiz,
+                                                        'quiz' => $jenis_soal->answer->title,
+                                                        'id_quiz_soal' => $soal->id,
+                                                        'soal' => $soal->question,
+                                                        'is_isian' => $soal->is_isian,
+                                                        'id_quiz_option' => $options->id,
+                                                        'jawaban' => $options->question,
+                                                        'isian' => $options->isian,
+                                                        'score' => $options->score,
+                                                    ];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return response()->json(['status'=>true,'data'=>$jawaban]);
+        } catch (\Exception $ex) {
+            return response()->json(['status'=>false,'data'=>[],'message'=>$ex->getMessage()]);
+        }
     }
 }

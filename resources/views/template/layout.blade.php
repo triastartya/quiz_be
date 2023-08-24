@@ -285,10 +285,36 @@
             </a>
           </li> --}}
           <li class="nav-item">
+            <a href="{{ url('/') }}/child" class="nav-link">
+              <i class="nav-icon fas fa-child"></i>
+              <p>
+                Remaja
+               </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{{ url('/') }}/quiz_praktek_gizi" class="nav-link">
               <i class="nav-icon fas fa-id-badge"></i>
               <p>
                 Soal kuesioner
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url('/') }}/hasil" class="nav-link">
+              <i class="nav-icon fas fa-heart"></i>
+              <p>
+                Hasil kuesioner
+                {{-- <span class="right badge badge-danger">New</span> --}}
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url('/') }}/jawaban" class="nav-link">
+              <i class="nav-icon fas fa-check"></i>
+              <p>
+                Jawaban
                 {{-- <span class="right badge badge-danger">New</span> --}}
               </p>
             </a>
