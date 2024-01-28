@@ -84,6 +84,7 @@ class QuizReportController extends Controller
                 $m_status = 'kurang';
             }
             
+            
             $master = quiz_submission_master::create([
                 'id_child'=>$request->id_child,
                 'jawaban' =>$m_max,
@@ -93,11 +94,15 @@ class QuizReportController extends Controller
                 'status' => $m_status
             ]);
             
-            foreach($data as $hasil){
+            foreach($data as $key=>$hasil){
                 $hasil['id_master'] = $master->id;
-                quiz_submission::create($hasil);
+                $hasil['id_child'] = $request->id_child;
+                $data[$key]['id_master'] = $master->id;
+                $data[$key]['id_child'] = $request->id_child;
+                //quiz_submission::create($hasil);
             }
-            
+            // dd($data);
+            $submission = quiz_submission::insert($data);
             DB::commit();
             return response()->json(['status'=>true,'data'=>$master]);
             

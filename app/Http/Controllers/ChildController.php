@@ -43,7 +43,33 @@ class ChildController extends Controller
     {
         //
         try{
-            $data = child::create($request->all());
+            $insert = $request->all();
+            //lila 
+            if($request->lila >=23.5){
+                $insert['lila_status'] = 'NORMAL';
+            }else{
+                $insert['lila_status'] = 'KURANG ENERGI KRONIK';
+            }            
+            //imt
+            $tb = $request->tinggi_badan / 100;
+            $imt = $request->berat_badan / ($tb*$tb);
+            $insert['imt'] = $imt;
+            if($imt < 17.0){
+                $insert['imt_status'] = 'KURANG BERAT BADAN TINGKAT BERAT';
+            }
+            if($imt >= 17.0 && $imt < 18.5){
+                $insert['imt_status'] = 'KURANG BERAT BADAN TINGKAT RINGAN';
+            }
+            if($imt >= 18.5 && $imt <= 25){
+                $insert['imt_status'] = 'NORMAL';
+            }
+            if($imt > 25 && $imt <= 27){
+                $insert['imt_status'] = 'KELEBIHAN BERAT BADAN TINGKAT RINGAN';
+            }
+            if($imt > 27){
+                $insert['imt_status'] = 'KELEBIHAN BERAT BADAN TINGKAT BERAT';
+            }
+            $data = child::create($insert);
             return response()->json(['status'=>true,'data'=>$data]);
         } catch (\Exception $ex) {
             return response()->json(['status'=>false,'data'=>[],'message'=>$ex->getMessage()]);
